@@ -60,6 +60,18 @@
         "EUR": 600,
         "NTC": 90000
       }
+    },
+    {
+      "created_at": "2023-06-30T13:47:30.950Z",
+      "login": " oleg@demo.ru",
+      "password": "demo",
+      "id": 6,
+      "balance": {
+        "RUB": 1000,
+        "USD": 2000,
+        "EUR": 1,
+        "NTC": 12
+      }
     }
   ],
   "favorites": {
