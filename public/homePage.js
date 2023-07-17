@@ -1,6 +1,7 @@
 "use strict";
 
 
+
 const logoutButton = new LogoutButton();
 
 logoutButton.action = () => {
@@ -39,9 +40,9 @@ moneyManager.addMoneyCallback = function(data) {
     ApiConnector.addMoney(data,(response) => {
         if(response.success) {
             ProfileWidget.showProfile(response.data);
-            MessageWidget.setMessage(response.success, 'Баланс успешно пополнен');
+            moneyManager.setMessage(isSuccess, 'Баланс успешно пополнен');
         }else {
-            MessageWidget.setMessage(response.success, response.error);
+            moneyManager.setMessage(isSuccess, message);
         }
         
     });
@@ -51,9 +52,9 @@ moneyManager.conversationMoneyCallback = function(data) {
     ApiConnector.convertMoney(data, (response) => {
         if(response.success) {
             ProfileWidget.showProfile(response.data);
-            MessageWidget.setMessage(response.success, 'Конвертация успешно выполнена');
+            moneyManager.setMessage(isSuccess, 'Конвертация успешно выполнена');
         }else {
-            MessageWidget.setMessage(response.success, response.error);
+            moneyManager.setMessage(isSuccess, message);
         }
     });
 }
@@ -62,9 +63,57 @@ moneyManager.sendMoneyCallback = function(data) {
     ApiConnector.transferMoney(data, (response) => {
         if(response.success) {
             ProfileWidget.showProfile(response.data);
-            MessageWidget.setMessage(response.success, 'Перевод выполнен успешно');
+            moneyManager.setMessage(isSuccess, 'Перевод выполнен успешно');
         }else {
-            MessageWidget.setMessage(response.success, response.error);
+            moneyManager.setMessage(isSuccess, message);
+        }
+
+    });
+}
+
+const favoritesWidget = new FavoritesWidget();
+
+
+    ApiConnector.getFavorites(function(response)  {
+        if(response.success) {
+            favoritesWidget.clearTable();
+            favoritesWidget.fillTable(response.data);
+            moneyManager.updateUsersList(response.data);
+        }else {
+            console.log(response.error);
+
+        }
+
+    });
+        
+    
+
+
+    favoritesWidget.addUserCallback = function(user) {
+    ApiConnector.addUserToFavorites(user, function(response) {
+        if(response.success) {
+            favoritesWidget.clearTable();
+            favoritesWidget.fillTable(response.data);
+            moneyManager.updateUsersList(response.data);
+            moneyManager.setMessage('Пользователь успешно добавлен в избранное');
+        }else {
+            moneyManager.setMessage('Ошибка при добавлении пользователя в избранное:');
+
+        }
+
+    });
+}
+
+favoritesWidget.removeUserCallback = function(user) {
+    ApiConnector.removeUserFromFavorites(user, function(response) {
+        if(response.success) {
+            favoritesWidget.clearTable();
+            favoritesWidget.fillTable(response.data);
+            moneyManager.updateUsersList(response.data);
+            moneyManager.setMessage('Пользователь успешно удален из избранного');
+        }else {
+            moneyManager.setMessage('Ошибка при удалении пользователя из избранного:');
+
         }
 
     });
